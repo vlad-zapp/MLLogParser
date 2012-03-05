@@ -35,16 +35,13 @@ function filter_logs(logs, format) { //dateOrder, incSyslogs, appName, logLevel)
     //appName - filter logs by application name
     //logLevel - array of strings, representing log levels needed in the filtered result. for example ['Error','Notice','Info']
     var flogs = new Array();    //array of filtered results
-    //reverse logs array if dateOrder is set to true
-    if (!format.oldestFirst) logs.reverse();
     //here goes the loop with some filtering conditions.
-    for (var i = 0; i < logs.length; i++) {
+    for (var i = logs.length-1; i > 0; i--) {
         var fstr = logs[i].split(' ');
         if ((!format.appName && !format.includeSystemLogs) || (format.appName && format.appName + ':' == fstr[3]) || (fstr[3] && format.includeSystemLogs && fstr[3][fstr[3].length - 1] != ':')) {
-            if (flogs.length >= 1000)
-                //because there is no need to show more than 1000 records
-                return flogs;
-            if (!format.logLevels.length) {
+            if(flogs.length>=1000)
+				break;
+			if (!format.logLevels.length) {
                 flogs.push(logs[i]);
             } else {
                 for (var j = 0; j < format.logLevels.length; j++) {
@@ -56,6 +53,8 @@ function filter_logs(logs, format) { //dateOrder, incSyslogs, appName, logLevel)
             }
         }
     }
+	//reverse logs array if dateOrder is set to true
+    if (!format.oldestFirst) flogs.reverse();
     return flogs;
 }
 
@@ -98,7 +97,7 @@ function processMsg(msg) {
 //send logs
 function sendLogs(tabid, format) {
     var flogs = filter_logs(load_logs(format.file),format);
-    flogs.splice(1000); //limit output to 1000 records
+    flogs.slice(-1000); //limit output to 1000 records
     tab2port[tabid].postMessage(flogs);
 }
 

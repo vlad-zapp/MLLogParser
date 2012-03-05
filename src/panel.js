@@ -43,6 +43,7 @@ function message(msg) {
         for (var i = 0; i < msg.length; i++)
             parent.bottom_frame.document.write(parseString(msg[i], i));
         parent.bottom_frame.document.write('</tr></table>');
+	parent.bottom_frame.scrollTo(0,parent.bottom_frame.document.body.scrollHeight);
     }
 }
 
