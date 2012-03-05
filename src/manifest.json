@@ -1,0 +1,9 @@
+{
+  "name": "Log parser",
+  "version" : "1.0",
+  "description" : "parses logs",
+  "background_page" : "bg.html",
+  "devtools_page" : "devtools.html",
+  "options_page" : "options.html",
+  "permissions": ["tabs","<all_urls>","experimental","webRequest"]
+}

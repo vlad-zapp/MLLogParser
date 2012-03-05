@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <script src="panel.js"></script>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div id="leftSideContainer">
+		<h1>Logs</h1>
+        <form name="logParamsForm">
+                Select log file<br />
+                <select name ="logFileSelect" style="width:180px;" onchange="setDefaultLogFile();">
+                <script type="text/javascript">
+                    var logFileURLs = localStorage["logFileURLs"].split("\n");
+                    for (var i = 0; i < logFileURLs.length; i++) {
+                        document.write("<option value='" + logFileURLs[i] + "'>" + logFileURLs[i] + "</option>");
+                    initForm();
+                    }
+                </script>
+                </select>
+            <hr />
+                <input type="checkbox" name="oldestFirst" />
+            Oldest records first<hr />
+                <input type="checkbox" name="includeSystemLogs" />
+            System logs</br>
+                <input type="checkbox" name="selectApp" onchange="appName.disabled=!this.checked" />
+            Application logs<br>
+                <input type="text" name="appName" disabled="true" /><hr />
+            <input type="checkbox" name="enableLoglevels" onchange="logLevels.disabled=!this.checked;">Loglevels<br />
+
+            <select disabled="true" multiple="multiple" name="logLevels" size="5" style="width:180px;">
+                <script>
+                allLevels = ['Finest', 'Finer', 'Fine', 'Debug', 'Config', 'Info', 'Warning', 'Notice', 'Error', 'Critical', 'Alert', 'Emergency'];
+                for (var i = 0; i < allLevels.length; i++)
+                    document.write("<option value='"+allLevels[i]+"'>" + allLevels[i] + "</option>");
+                </script>
+            </select>
+
+            <hr />
+            <input type="checkbox" name="updateByTimeout" value="timeout" onchange="timeout.disabled=!this.checked"> Update by timeout<br />
+            <input type="text" name="timeout" disabled="true"/><br />
+            <input type="checkbox" name="updateByUrl" value="url"/ onchange="url.disabled=!this.checked"> Update by url<br />
+            <input type="text" name="url" disabled="true"/><br />
+            <hr />
+            <input type="button" value="Update" onclick="updateButtonPressed()"/>
+        </form>
+        </div>
+    </body>
+</html>

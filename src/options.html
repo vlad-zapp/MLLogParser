@@ -1,0 +1,26 @@
+<html>
+<head>
+    <title>My Test Extension Options</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<script type="text/javascript">
+    // Saves options to localStorage.
+    function save_options() {
+        localStorage["logFileURLs"] = document.getElementById("logFileURLs").value;
+    }
+
+    // Loads options from localStorage.
+    function load_options() {
+        document.getElementById("logFileURLs").value = localStorage["logFileURLs"];
+    }
+</script>
+
+<body onload="load_options()">
+
+Log file URLs<br />
+<textarea id="logFileURLs" value='' style='width:600px; height:250px;'></textarea>
+<br />
+
+<button onclick="save_options()">Save</button>
+</body>
+</html>
