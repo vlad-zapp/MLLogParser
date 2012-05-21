@@ -1,5 +1,5 @@
 {
-  "name": "Log parser",
+  "name": "MarkLogic Log parser",
   "version" : "1.11",
   "description" : "parses logs",
   "background_page" : "bg.html",
