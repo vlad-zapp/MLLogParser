@@ -1,9 +1,14 @@
 {
   "name": "MarkLogic Log parser",
-  "version" : "1.11",
+  "version" : "1.2",
   "description" : "parses logs",
-  "background_page" : "bg.html",
+  
+  "background": {
+    "scripts": ["bg.js"]
+  },
+
   "devtools_page" : "devtools.html",
   "options_page" : "options.html",
-  "permissions": ["tabs","<all_urls>","experimental","webRequest"]
+  "permissions": ["http://*/*","tabs","<all_urls>","experimental"],
+  "manifest_version": 2
 }

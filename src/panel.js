@@ -1,11 +1,16 @@
-///<reference path="chrome-api-vsdoc.js"/>
+//<reference path="chrome-api-vsdoc.js"/>
 
 var prt = chrome.extension.connect();
 prt.onMessage.addListener(message);
 
 function initForm() {
-    //alert()
+    var logFileURLs = localStorage["logFileURLs"].split("\n");
+    for (var i = 0; i < logFileURLs.length; i++) {
+        parent.top_frame.logParamsForm.logFileSelect.add(new Option(logFileURLs[i]));
+    }
+
     parent.top_frame.logParamsForm.logFileSelect.selectedIndex = localStorage["currentFileIndex"];
+    //formUpdated();
 }
 
 function parseString(string, stringNum) {
@@ -33,6 +38,7 @@ function parseString(string, stringNum) {
 
 function message(msg) {
     //process message from background script
+
     if (msg == "update") {
         //request to update logs
         formUpdated();
@@ -85,7 +91,7 @@ function formUpdated() {
         try {
             logRequest.timeout = parseInt(parent.top_frame.logParamsForm.timeout.value);
         } catch (error) {
-            alert("bad format");
+            alert("bad format of the timeout value");
         }
     }
     if (parent.top_frame.logParamsForm.updateByUrl.checked) {
@@ -95,3 +101,20 @@ function formUpdated() {
     //logRequest
     prt.postMessage(logRequest);
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    initForm();
+    
+    allLevels = ['Finest', 'Finer', 'Fine', 'Debug', 'Config', 'Info', 'Warning', 'Notice', 'Error', 'Critical', 'Alert', 'Emergency'];
+    
+     for (var i = 0; i < allLevels.length; i++){
+         parent.top_frame.logParamsForm.logLevels.add(new Option(allLevels[i]));
+     }
+
+    //UI Events bindings
+    parent.top_frame.logParamsForm.submitButton.addEventListener('click', updateButtonPressed );
+    parent.top_frame.logParamsForm.selectApp.addEventListener('click', function(){ parent.top_frame.logParamsForm.appName.disabled = !parent.top_frame.logParamsForm.selectApp.checked; } );
+    parent.top_frame.logParamsForm.enableLoglevels.addEventListener('click', function(){ parent.top_frame.logParamsForm.logLevels.disabled = !parent.top_frame.logParamsForm.enableLoglevels.checked; } );
+    parent.top_frame.logParamsForm.updateByTimeout.addEventListener('click', function(){ parent.top_frame.logParamsForm.timeout.disabled = !parent.top_frame.logParamsForm.updateByTimeout.checked; } );
+    parent.top_frame.logParamsForm.updateByUrl.addEventListener('click', function(){ parent.top_frame.logParamsForm.url.disabled = !parent.top_frame.logParamsForm.updateByUrl.checked; } );
+});

@@ -15,7 +15,7 @@ function load_logs(logUrl) {
     var req = new XMLHttpRequest();
     req.open("GET", logUrl, false, "admin", "admin");
     req.send(null);
-
+    
     if (req.status == 200) var resp = req.responseText;
     else alert("Error executing XMLHttpRequest call!");
 
@@ -81,16 +81,19 @@ function processMsg(msg) {
     tabProps.active = true;
 
     updateParams = new Object();
-    if (msg.timeout) {
-        updateParams.timeout = msg.timeout;
-    }
-    if (msg.url) {
-        updateParams.url = msg.url;
-        updateParams.regExp = new RegExp(msg.url ? msg.url : null, 'i');
-    }
+    
+    // if (msg.url) {
+    //     updateParams.url = msg.url;
+    //     updateParams.regExp = new RegExp(msg.url ? msg.url : null, 'i');
+    // }
 
     chrome.tabs.query(tabProps, function (tab) {
         sendLogs(tab[0].id, msg);
+        if (msg.timeout) {
+            updateParams.timeout = msg.timeout;
+            clearTimeout(waitTimer);
+            waitTimer = setTimeout(function() {updateLogs(tab[0].id);}, updateParams.timeout);
+        }
     });
 }
 
@@ -113,31 +116,36 @@ function activeTabChanged(tabId, selectInfo) {
     if (tab2port[tabId]) {
         //if the  tab have devtools log parser initialized
         //set request filter
-        tab2port[tabId].postMessage("update");
-        filter.tabId = tabId;
-        filter.urls = ["http://*/*"];
-        chrome.webRequest.onCompleted.removeListener(respCatcher);
-        chrome.webRequest.onCompleted.addListener(respCatcher, filter);
+        clearTimeout(waitTimer);
+        updateLogs(tabId);
+        // tab2port[tabId].postMessage("update");
+        // filter.tabId = tabId;
+        // filter.urls = ["http://*/*"];
+        //chrome.webRequest.onCompleted.removeListener(respCatcher);
+        //chrome.webRequest.onCompleted.addListener(respCatcher, filter);
     } else {
         //else remove previous filter from previous active tab
-        chrome.webRequest.onCompleted.removeListener(respCatcher);
+        //chrome.webRequest.onCompleted.removeListener(respCatcher);
     }
 }
 
-function respCatcher(details) {
-    //fired after responce from a web server (only for the active tab)     
-    if ((!updateParams.url && updateParams.timeout) || (updateParams.url && details.url.match(updateParams.regExp))) {
-        if (updateParams.timeout) {
-            clearTimeout(waitTimer);
-            waitTimer = setTimeout('updateLogs(' + details.tabId.toString() + ');', updateParams.timeout);
-        } else {
-            updateLogs(details.tabId);
-        }
-    }
-}
+
+//not used
+// function respCatcher(details) {
+//     //fired after responce from a web server (only for the active tab)     
+//     if ((!updateParams.url && updateParams.timeout) || (updateParams.url && details.url.match(updateParams.regExp))) {
+//         if (updateParams.timeout) {
+//             clearTimeout(waitTimer);
+//             waitTimer = setTimeout('updateLogs(' + details.tabId.toString() + ');', updateParams.timeout);
+//         } else {
+//             updateLogs(details.tabId);
+//         }
+//     }
+// }
 
 
 function updateLogs(tabId) {
+    //alert("hello from "+tabId);
     //send command to devtools to update log list
     tab2port[tabId].postMessage("update");
 }
