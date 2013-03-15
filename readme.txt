@@ -12,7 +12,7 @@ Important: if your need to use HTTP authentification to acess log files you shou
 
 3. Usage 
 Just press the F12 anytime in Chrome and open Logs tab. You can customize here all the filtering and updating rules. Also you should choose the log source here.
-One more world about updating: logs can be updated by timeout(specified in msecs) and by request to specified URL. 
+One more word about updating: logs can be updated by timeout(specified in msecs) and by request to specified URL. 
 Update by timeout occurs when network activity is not present in current tab for specified time.
 Update by URL occurs when any request to specified address was made.
 If you combine that two triggers you get updated logs after some msecs from last request/responce from specified URL which is very useful, when you are trying to trace updates of MarkLogic logs.
